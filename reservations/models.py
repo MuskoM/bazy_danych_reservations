@@ -69,8 +69,14 @@ class Pomieszczenie(models.Model):
 
 
 class RezerwacjaSali(models.Model):
+    status_labels = (
+        ("Z", "Zaakceptowana"),
+        ("O", "Odrzucona"),
+        ("R", "W trakcie rozpatrywania")
+    )
     id_rezerwacji_sali = models.AutoField(primary_key=True)
     id_pomieszczenia = models.ForeignKey(Pomieszczenie, on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=status_labels, default="R")
     data_od = models.DateTimeField()
     data_do = models.DateTimeField()
     id_uzytkownika = models.ForeignKey(Uzytkownik,related_name="rezerwacje_sal", on_delete=models.CASCADE)

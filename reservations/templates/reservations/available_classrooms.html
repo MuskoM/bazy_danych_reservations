@@ -1,0 +1,9 @@
+{% extends "generic_site.html" %}
+
+{% block contents %}
+
+    {% for wydzial in wydzialy %}
+        {{ wydzial }}
+    {% endfor %}
+
+{% endblock %}

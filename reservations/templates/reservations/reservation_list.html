@@ -1,0 +1,12 @@
+{% extends "generic_site.html" %}
+
+
+{% block contents %}
+
+    {% for element in lista_rezerwacji %}
+
+        <p>{{ element.id_pomieszczenia }}</p>
+
+    {% endfor %}
+
+{% endblock contents %}
