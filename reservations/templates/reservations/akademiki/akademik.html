@@ -1,0 +1,14 @@
+{% extends "generic_site.html" %}
+
+
+{% block contents %}
+
+    <h1>{{ nazwa_akademika }}</h1>
+
+    {% for pokoj in lista_pokoi %}
+
+        <h3>{{ pokoj }}</h3>
+
+    {% endfor %}
+
+{% endblock contents %}

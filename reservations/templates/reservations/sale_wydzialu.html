@@ -2,7 +2,26 @@
 
 {% block contents %}
 
-    <h3>Pracownie      LAboratoria    Sale wykładowe</h3>
-    {{ wydzial }}
+    <h1>{{ nazwa_wydzialu }}</h1>
+    <div class="inline-group">
+    <div>
+        <h3>Sale</h3>
+        {% for sala in class_list%}
+            {{ sala }}
+        {% endfor %}
+    </div>
+    <div>
+        <h3>Laboratoria</h3>
+         {% for sala in labs_list%}
+            {{ sala }}
+        {% endfor %}
+    </div>
+    <div>
+        <h3>Pracownie</h3>
+         {% for sala in workroom_list%}
+            {{ sala }}
+        {% endfor %}
+    </div>
+    </div>
 
 {% endblock contents %}

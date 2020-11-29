@@ -17,7 +17,7 @@ urlpatterns += [
     path('reservations/', views.reservations, name="current_reservations"),
 
     # Możliwe sale do wyboru
-    path('plan/', views.rooms),
+    path('plan/', views.rooms,name="plan"),
     path('plan/wydzial=<int:wydzial_id>/', views.plan_wydzialu),
     path('plan/wydzial=<int:wydzial_id>/room=<int:room_id>/', views.room_reservations),
 
@@ -39,7 +39,11 @@ urlpatterns += [
 
     # path('user/all_reservations/res=<int:reservation_id>/request', views.request_reservation),
 
-    path('user/', views.detailed_profile),
+    path('user/', views.detailed_profile,name='profil'),
     path('user/edit/', views.edit_profile),
+
+    path('akademiki/',views.akademiki, name="akademiki"),
+    path('akademiki/akademik=<int:id_akademika>',views.akademik),
+    path('akademiki/akademik=<int:id_akademika>/pokoj=<int:id_pokoju>',views.pokoj),
 
 ]

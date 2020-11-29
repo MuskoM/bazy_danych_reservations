@@ -1,0 +1,12 @@
+{% extends "generic_site.html" %}
+
+
+{% block contents %}
+
+    {% for akademik in lista_akademikow %}
+
+        <h2>{{ akademik }}</h2>
+
+    {% endfor %}
+
+{% endblock contents %}

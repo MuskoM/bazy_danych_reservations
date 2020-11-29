@@ -1,0 +1,19 @@
+{% extends "generic_site.html" %}
+
+{% block contents %}
+
+    <h1>{{ selected_classroom }}</h1>
+    <h2>pom. {{ nr_pom }}</h2>
+    <h2>{{ no_seats }}</h2>
+    <h3>{{ czy_rzutnik }}</h3>
+    <h4>{{ aux_descrp }}</h4>
+
+    {% for res in lista_rezerwacji %}
+
+        od {{ res.data_od }} do {{ res.data_do }}
+
+    {% endfor %}
+
+    <button>THIS IS A BUTTON</button>
+
+{% endblock %}

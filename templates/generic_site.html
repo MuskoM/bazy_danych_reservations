@@ -64,7 +64,7 @@
 <nav id="navbar" class="navbar navbar-expand-lg static-top shadow">
 
     <div id="navbar" class="container">
-        <a class="navbar-brand" href="#">{{ title|default:"Nvi0" }}</a>
+        <a class="navbar-brand" href={% url 'reservations_index' %}>{{ title|default:"PB rezerwacje" }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -73,22 +73,17 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 {% block navbar %}
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home
-                            <span class="sr-only">(current)</span>
-                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link" id="io_skrypt" href={% url 'current_reservations' %}>Rezerwacje</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="io_skrypt" href="#">1</a>
+                        <a class="nav-link" href={% url 'plan' %}>Sale</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">2</a>
+                        <a class="nav-link" href={% url 'akademiki' %}>Akademiki</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">3</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">4</a>
+                        <a class="nav-link" href={% url 'profil' %}>Profil</a>
                     </li>
                     </ul>
                     </div>

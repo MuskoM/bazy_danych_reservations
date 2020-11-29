@@ -56,10 +56,16 @@ class Student(models.Model):
 
 
 class Pomieszczenie(models.Model):
+    type_of_classroom = (
+        ("S", "Sala"),
+        ("L", "Laboratorium"),
+        ("P", "Pracownia")
+    )
+
     id_pomieszczenia = models.AutoField(primary_key=True)
     id_wydzialu = models.ForeignKey(Wydzial, on_delete=models.CASCADE)
     opis = models.TextField()
-    rodzaj_pom = models.CharField(max_length=30)
+    rodzaj_pom = models.CharField(max_length=1, choices=type_of_classroom, default="S")
 
     def __str__(self):
         return f' {self.id_pomieszczenia} : {self.rodzaj_pom} : {self.id_wydzialu}'
@@ -96,7 +102,7 @@ class PracowaniaSpecjalistyczna(Pomieszczenie):
     osprzet = models.TextField()
 
     def __str__(self):
-        return f'{self.nr_pracowni}'
+        return f'Pracownia nr {self.nr_pracowni}'
 
     class Meta:
         verbose_name_plural = "Pracownie Specjalistyczne"
@@ -109,7 +115,7 @@ class Sala(Pomieszczenie):
     jaka_tablica = models.TextField()
 
     def __str__(self):
-        return f'Sala: {self.nr_sali}'
+        return f'Sala nr {self.nr_sali}'
 
     class Meta:
         verbose_name_plural = "Sale"
@@ -122,7 +128,7 @@ class Laboratorium(Pomieszczenie):
     osprzet = models.TextField()
 
     def __str__(self):
-        return f'Laboratorium {self.nr_laboratorium}'
+        return f'Laboratorium nr {self.nr_laboratorium}'
 
     class Meta:
         verbose_name_plural = "Laboratoria"
