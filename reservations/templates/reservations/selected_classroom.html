@@ -37,11 +37,11 @@
 
       <div style="float: left; clear: both;">
         <strong>OD:</strong>
-        <input class="form-control form-control-sm" type="datetime-local" style="width: 185px" id="start_date">
+        <input class="form-control form-control-sm" type="datetime-local" style="width: 185px" name="data_od">
       </div>
       <div style="float: left; margin-left: 3px;">
         <strong>DO:</strong>
-        <input class="form-control form-control-sm" type="datetime-local" style="width: 185px" id="end_date">
+        <input class="form-control form-control-sm" type="datetime-local" style="width: 185px" name="data_do">
       </div>
 
         <div type="submit" id="add-btn" style="clear: both;">
@@ -49,5 +49,14 @@
         </div>
     </div>
 </form>
+
+{% if messages %}
+    <div class="alert alert-dismissible alert-success messages">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {% for message in messages %}
+            <strong>Well done!</strong> {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
 
 {% endblock %}

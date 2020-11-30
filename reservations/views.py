@@ -4,6 +4,7 @@ from .models import RezerwacjaSali, Wydzial, Pomieszczenie, Sala, PracowaniaSpec
 from .models import Pokoj, RezerwacjaPokoju, Akademik
 from .forms import UserForm, NewReservationForm
 from django.views import View
+from django.contrib import messages
 
 
 def index(request):
@@ -52,53 +53,6 @@ def plan_wydzialu(request, wydzial_id):
 
     return  render(request, 'reservations/sale_wydzialu.html', context)
 
-
-# TODO: Szczegóły daty rezerwacji danej sali na danym wydziale, wyświetlać już zarezerwowane terminy,
-#  wybór daty i godziny rezerwacji
-# TODO: dać opcję POST
-
-# BACKUP
-'''def room_reservations(request, wydzial_id, room_id):
-
-    selected_classroom = Pomieszczenie.objects.get(id_wydzialu=wydzial_id,id_pomieszczenia=room_id)
-    type_of_room = selected_classroom.rodzaj_pom
-    no_seats = 0
-    nr_pom = selected_classroom.id_pomieszczenia
-    czy_rzutnik = False
-
-    room_reservations_list = RezerwacjaSali.objects.filter(id_pomieszczenia=room_id)
-
-    aux_descrp = ""
-
-    if type_of_room == "L":
-        selected_classroom = Laboratorium.objects.get(id_wydzialu=wydzial_id, id_pomieszczenia=room_id)
-        no_seats = selected_classroom.ilosc_miejsc
-        czy_rzutnik = selected_classroom.czy_rzutnik
-        aux_descrp = selected_classroom.osprzet
-
-    elif type_of_room == "S" or type_of_room =="A":
-        selected_classroom = Sala.objects.get(id_wydzialu=wydzial_id, id_pomieszczenia=room_id)
-        no_seats = selected_classroom.ilosc_miejsc
-        czy_rzutnik = selected_classroom.czy_rzutnik
-        aux_descrp = selected_classroom.jaka_tablica
-
-    elif type_of_room == "P":
-        selected_classroom = PracowaniaSpecjalistyczna.objects.get(id_wydzialu=wydzial_id, id_pomieszczenia=room_id)
-        no_seats = selected_classroom.ilosc_miejsc
-        czy_rzutnik = selected_classroom.czy_rzutnik
-        aux_descrp = selected_classroom.osprzet
-
-    context ={
-        "selected_classroom": selected_classroom,
-        "nr_pom": nr_pom,
-        "no_seats": no_seats,
-        "czy_rzutnik": czy_rzutnik,
-        "aux_descrp": aux_descrp,
-        "lista_rezerwacji": room_reservations_list
-    }
-
-    return render(request, 'reservations/selected_classroom.html', context)'''
-
 class Room_reservations(View):
     def get(self, request, wydzial_id, room_id):
         selected_classroom = Pomieszczenie.objects.get(id_wydzialu=wydzial_id, id_pomieszczenia=room_id)
@@ -143,12 +97,17 @@ class Room_reservations(View):
         return render(request, 'reservations/selected_classroom.html', context)
 
     def post(self, request, wydzial_id, room_id):
-        new_reservation_form = NewReservationForm(request.POST)
-        print(request)
-        if new_reservation_form.is_valid():
+        new_reservation = NewReservationForm(request.POST)
+        #print(request)
+        if new_reservation.is_valid():
+            new_reservation_form = new_reservation.save(commit=False)
             new_reservation_form.id_pomieszczenia = Pomieszczenie.objects.get(pk=room_id)
-            new_reservation_form.id_uzytkownika = request.user.Uzytkownik
-            new_reservation_form.save()
+            new_reservation_form.id_uzytkownika = request.user.uzytkownik
+            new_reservation_form.data_od = new_reservation.cleaned_data['data_od']
+            new_reservation_form.data_do = new_reservation.cleaned_data['data_do']
+            new_reservation.save()
+            messages.success(request, 'Pomyślnie dodkonano rezerwacji!!')
+
         return redirect('sala', wydzial_id, room_id)
 
 
