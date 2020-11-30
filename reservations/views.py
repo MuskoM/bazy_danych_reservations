@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import RezerwacjaSali, Wydzial, Pomieszczenie, Sala, PracowaniaSpecjalistyczna, Laboratorium
 from .models import Pokoj, RezerwacjaPokoju, Akademik
-from .forms import UserForm, NewReservationForm
+from .forms import UserForm, NewReservationForm, ChangeStatusForm
 from django.views import View
 from django.contrib import messages
 
@@ -61,7 +61,8 @@ class Room_reservations(View):
         nr_pom = selected_classroom.id_pomieszczenia
         czy_rzutnik = False
 
-        room_reservations_list = RezerwacjaSali.objects.filter(id_pomieszczenia=room_id)
+        room_reservations_list = RezerwacjaSali.objects.filter(id_pomieszczenia=room_id, status="Z")
+        room_reservations_list = room_reservations_list.order_by("data_od")
 
         aux_descrp = ""
 
@@ -98,7 +99,6 @@ class Room_reservations(View):
 
     def post(self, request, wydzial_id, room_id):
         new_reservation = NewReservationForm(request.POST)
-        #print(request)
         if new_reservation.is_valid():
             new_reservation_form = new_reservation.save(commit=False)
             new_reservation_form.id_pomieszczenia = Pomieszczenie.objects.get(pk=room_id)
@@ -111,25 +111,34 @@ class Room_reservations(View):
         return redirect('sala', wydzial_id, room_id)
 
 
-@login_required
-def pending_reservations(request):
+class Pending_reservations(View):
+    def get(self, request):
 
-    pending = RezerwacjaSali.objects.filter(status="R")
+        pending = RezerwacjaSali.objects.filter(status="R")
+        pending = pending.order_by("data_od")
+        context = {
+            "reservations_list": pending
+        }
 
-    context = {
-        "pending_reservations": pending
-    }
+        return render(request, 'reservations/admin_reservations/pending_reservations_list.html', context)
 
-    return render(request, 'reservations/admin_reservations/pending_reservations_list.html', context)
+    def post(self, request, reservation_id):
+        new_status = ChangeStatusForm(request.POST)
+        reservation = RezerwacjaSali.objects.get(pk=reservation_id)
+        if new_status.is_valid():
+            reservation.status = new_status.cleaned_data['status']
+            reservation.save()
+
+        return redirect(request.META.get('HTTP_REFERER'))
+
 
 
 @login_required
 def declined_reservations(request):
 
     declined = RezerwacjaSali.objects.filter(status="O")
-
     context = {
-        "declined_reservations": declined,
+        "reservations_list": declined,
     }
 
     return render(request, 'reservations/admin_reservations/declined_reservations_list.html', context)
@@ -140,7 +149,7 @@ def accepted_reservations(request):
     accepted = RezerwacjaSali.objects.filter(status="Z")
 
     context = {
-        "accepted_reservations": accepted,
+        "reservations_list": accepted,
     }
 
     return render(request, 'reservations/admin_reservations/accepted_reservations_list.html', context)

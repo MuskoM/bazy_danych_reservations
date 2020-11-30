@@ -1,6 +1,7 @@
 from . import views
 from django.urls import path,include
-from .views import Room_reservations
+from .views import Room_reservations, Pending_reservations
+from django.contrib.auth.decorators import login_required, permission_required
 
 
 urlpatterns = [
@@ -23,9 +24,11 @@ urlpatterns += [
     path('plan/wydzial=<int:wydzial_id>/room=<int:room_id>/', Room_reservations.as_view(), name="sala"),
 
     # login required and admin sites
-    path('admin/pending_reservations/',views.pending_reservations),
-    path('admin/declined_reservations/',views.declined_reservations),
-    path('admin/accepted_reservations/',views.accepted_reservations),
+    # TODO: rozminic usprawnienia, zeby tylko admin mial dostep do tych stron
+    path('admin/pending_reservations/', login_required(Pending_reservations.as_view()), name="pending_reservations"),
+    path('admin/pending_reservations/reservation=<int:reservation_id>/', login_required(Pending_reservations.as_view()), name="reservation_temp"),
+    path('admin/declined_reservations/', views.declined_reservations),
+    path('admin/accepted_reservations/', views.accepted_reservations),
 
     # user sitee
     path('user/pending_reservations/', views.user_pending_reservations),
