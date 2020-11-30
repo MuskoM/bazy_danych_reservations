@@ -1,19 +1,53 @@
 {% extends "generic_site.html" %}
 
 {% block contents %}
+    <div align="center">
+        <h1>Sala {{ selected_classroom.opis }}</h1>
+        <h5>Ilość miejsc: {{ no_seats }}</h5>
+        <h5>Posiada rzutnik:
+            {% if czy_rzutnik %}
+                TAK
+            {% else %}
+                NIE
+            {% endif %}
+        </h5>
+            {% if ype_of_room == "S" or type_of_room == "A"  %}
+                <h5>Tablica: {{ aux_descrp }}</h5>
+            {% else %}
+                <h5>Osprzet: {{ aux_descrp }}</h5>
+            {% endif %}
+    </div>
 
-    <h1>{{ selected_classroom }}</h1>
-    <h2>pom. {{ nr_pom }}</h2>
-    <h2>{{ no_seats }}</h2>
-    <h3>{{ czy_rzutnik }}</h3>
-    <h4>{{ aux_descrp }}</h4>
-
+    <h4>Aktualne rezerwacje:</h4>
+<ol>
     {% for res in lista_rezerwacji %}
-
-        od {{ res.data_od }} do {{ res.data_do }}
-
+    <li>
+        <strong>OD:</strong> {{ res.data_od }} <strong>DO:</strong> {{ res.data_do }}
+    </li>
     {% endfor %}
+</ol>
+<hr style="height: 5px; background: gray;">
 
-    <button>THIS IS A BUTTON</button>
+<form method="POST" role="form">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="col-form-label col-form-label-sm" style="font-weight: bold; float: left;">
+          Wybierz, kiedy chcesz zarezerwować sale
+      </label>
+
+      <div style="float: left; clear: both;">
+        <strong>OD:</strong>
+        <input class="form-control form-control-sm" type="datetime-local" style="width: 185px" id="start_date">
+      </div>
+      <div style="float: left; margin-left: 3px;">
+        <strong>DO:</strong>
+        <input class="form-control form-control-sm" type="datetime-local" style="width: 185px" id="end_date">
+      </div>
+
+        <div type="submit" id="add-btn" style="clear: both;">
+            <br><button>ZAREZERWUJ</button>
+        </div>
+    </div>
+</form>
 
 {% endblock %}

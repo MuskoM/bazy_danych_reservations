@@ -1,5 +1,6 @@
 from . import views
 from django.urls import path,include
+from .views import Room_reservations
 
 
 urlpatterns = [
@@ -18,8 +19,9 @@ urlpatterns += [
 
     # Możliwe sale do wyboru
     path('plan/', views.rooms,name="plan"),
-    path('plan/wydzial=<int:wydzial_id>/', views.plan_wydzialu),
-    path('plan/wydzial=<int:wydzial_id>/room=<int:room_id>/', views.room_reservations),
+    path('plan/wydzial=<int:wydzial_id>/', views.plan_wydzialu, name="wydzial"),
+    #path('plan/wydzial=<int:wydzial_id>/room=<int:room_id>/', views.room_reservations, name="sala"),
+    path('plan/wydzial=<int:wydzial_id>/room=<int:room_id>/', Room_reservations.as_view(), name="sala"),
 
     # login required and admin sites
     path('admin/pending_reservations/',views.pending_reservations),

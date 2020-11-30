@@ -54,16 +54,17 @@ class Student(models.Model):
     class Meta:
         verbose_name_plural = "Studenci"
 
-
 class Pomieszczenie(models.Model):
     type_of_classroom = (
         ("S", "Sala"),
         ("L", "Laboratorium"),
-        ("P", "Pracownia")
+        ("P", "Pracownia"),
+        ("A", "Aula wykladowa")
     )
 
     id_pomieszczenia = models.AutoField(primary_key=True)
     id_wydzialu = models.ForeignKey(Wydzial, on_delete=models.CASCADE)
+    # numer sali w prawdziwym zyciu
     opis = models.TextField()
     rodzaj_pom = models.CharField(max_length=1, choices=type_of_classroom, default="S")
 
@@ -93,7 +94,6 @@ class RezerwacjaSali(models.Model):
 
     class Meta:
         verbose_name_plural = "Rezerwacje Sal"
-
 
 class PracowaniaSpecjalistyczna(Pomieszczenie):
     nr_pracowni = models.AutoField(primary_key=True)

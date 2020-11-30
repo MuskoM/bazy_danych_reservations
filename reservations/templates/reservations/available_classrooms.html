@@ -2,8 +2,16 @@
 
 {% block contents %}
 
-    {% for wydzial in wydzialy %}
-        {{ wydzial }}
-    {% endfor %}
+    <h2 align="center">Wydziały Politechniki Białostockiej</h2>
+    <!-- TODO fajnie by bylo wysrodkoweac te przyciski-->
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        {% for wydzial in wydzialy %}
+            <button type="button" class="btn btn-outline-primary">
+                <a href="{% url 'wydzial' wydzial.id_wydzialu %}">{{ wydzial }}</a>
+            </button>
+        {% endfor %}
+    </div>
+
+
 
 {% endblock %}
