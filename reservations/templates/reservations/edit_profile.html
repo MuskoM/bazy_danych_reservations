@@ -2,16 +2,13 @@
 
 {% block contents %}
 
-     <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-         <div class="form-group">
-             {%  for element in user_form  %}
-                 {{ element.label }}
-                 {{ element }}
-             {% endfor %}
-         </div>
-    <input type="submit" value="login" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </form>
+    <div style="display: flex; justify-content: space-around;" >
+        <form method="POST" role="form">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Zatwierdź">
+        </form>
+    </div>
+
 
 {% endblock %}

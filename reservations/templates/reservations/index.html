@@ -1,11 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends 'generic_site.html' %}
+{% load static %}
 
-</head>
 
-<body>
-<p>This is a new site</p>
-</body>
+{% block contents %}
+    <div class="jumbotron">
+        <div>
+            <h2 class="display-2">Witamy na stronie Politechniki Białostockiej!</h2>
+            <hr clas="my-2">
+            <h3 class="display-4">Możesz zarezerwować tu salę bądź pokój w jednym z naszych akademików</h3>
+        </div>
+        <div style="display: flex; justify-content: space-around; padding-bottom: 2em">
+            <a href="{% url "plan" %}" class="btn btn-success">Zarezerwuj Sale</a>
+            <a href="{% url "akademiki" %}" class="btn btn-info">Zarezerwuj Pokój w Akademiku</a>
+        </div>
 
-</html>
+
+    </div>
+
+
+{% endblock contents %}

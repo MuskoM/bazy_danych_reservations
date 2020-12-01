@@ -6,9 +6,7 @@
 <div class="text-center">
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
         {% for wydzial in wydzialy %}
-            <button type="button" class="btn btn-outline-primary">
-                <a href="{% url 'wydzial' wydzial.id_wydzialu %}">{{ wydzial }}</a>
-            </button>
+            <a type="button" class="btn btn-outline-primary" href="{% url 'wydzial' wydzial.id_wydzialu %}">{{ wydzial }}</a>
         {% endfor %}
     </div>
 </div>

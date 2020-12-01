@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
+    {% load static %}
     <title>{{ title | default:"Nvi0" }}</title>
 
     <meta charset="utf-8">
@@ -20,7 +21,7 @@
     </style>
     <style>
         html {
-            background: url('https://source.unsplash.com/twukN12EN7c/1920x1080') no-repeat center center fixed;
+            background: url('{% static "reservations/jason-leung-tmWNPhSPKUk-unsplash.jpg" %}') no-repeat center center fixed;
             -webkit-background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;
@@ -28,7 +29,7 @@
         }
 
         body {
-            background: url('https://source.unsplash.com/twukN12EN7c/1920x1080') no-repeat center center fixed;
+            background: url('{% static "reservations/jason-leung-tmWNPhSPKUk-unsplash.jpg" %}') no-repeat center center fixed;
             background-size: auto;
             -family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
             font-size: 14px;
@@ -47,7 +48,6 @@
 
 </head>
 <body>
-{% load static %}
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script src="{% static 'frontend/main.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -104,7 +104,7 @@
 
 <div class="container">
     <div class="card border-0 shadow my-5">
-        <div class="card-body p-5">
+        <div class="card-body p-5" style="display: flex; flex-direction: column">
             {% block contents %}
                 <h1 class="font-weight-light">Fixed Full Page Background Image</h1>
                 <p class="lead">In this snippet, the background image is fixed to the body element. Content on the page

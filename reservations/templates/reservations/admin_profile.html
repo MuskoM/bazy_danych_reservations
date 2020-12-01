@@ -3,7 +3,7 @@
 {% block res_links %}
 
     <h2 style="display: flex; justify-content: center; align-content: center; margin-left: -1em">Twoje rezerwacje</h2>
-    <div style="display: flex; justify-content: center; align-content: center">
+    <div style="display: flex; justify-content: center; align-content: center; margin-bottom: 2em">
         <a class="btn btn-success" style="margin-right: 1em" href="{% url "user_accepted_reservations" %}">Zaakceptowane
             Rezerwacje</a>
         <a class="btn btn-danger" style="margin-right: 1em" href="{% url "user_declined_reservations" %}">Odrzucone
@@ -14,11 +14,11 @@
 
     <h2 style="display: flex; justify-content: center; align-content: center; margin-left: -1em">Rezerwacje użytkowników</h2>
     <div style="display: flex; justify-content: center; align-content: center">
-        <a class="btn btn-success" style="margin-right: 1em" href="{% url "user_accepted_reservations" %}">Zaakceptowane
+        <a class="btn btn-success" style="margin-right: 1em" href="{% url "accepted_reservations" %}">Zaakceptowane
             Rezerwacje</a>
-        <a class="btn btn-danger" style="margin-right: 1em" href="{% url "user_declined_reservations" %}">Odrzucone
+        <a class="btn btn-danger" style="margin-right: 1em" href="{% url "declined_reservations" %}">Odrzucone
             rezerwacje</a>
-        <a class="btn btn-info " style="margin-right: 1em" href="{% url "user_pending_reservations" %}">Nierozpatrzone
+        <a class="btn btn-info " style="margin-right: 1em" href="{% url "pending_reservations" %}">Nierozpatrzone
             rezerwacje</a>
     </div>
 

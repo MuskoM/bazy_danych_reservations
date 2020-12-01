@@ -1,26 +1,32 @@
 {% extends "generic_site.html" %}
 
 {% block contents %}
-    <div style="display: flex; justify-content: flex-end; padding-bottom: 2em">
-    <a href="{% url "edit_profile" %}" class="btn btn-primary">Edytuj Profil</a>
-    </div>
     <div class="jumbotron">
         {% block info %}
             <h1 class="display-3">{{ name }} {{ surname }}</h1>
             <h4 class="display-4">Nr indeksu: {{ nr_indeksu }}</h4>
             <hr class="my-2">
-            <h3>E-mail:{{ e_mail }}</h3>
-            <h3>Nr telefonu: {{ telefon }}</h3>
-            <h3>{{ wydział }}</h3>
-            <h3>{{ kierunek }}</h3>
+            <p class="lead"><strong>E-mail:</strong> {{ e_mail }}</p>
+            <p class="lead"><strong>Nr telefonu:</strong> {{ telefon }}</p>
+            <br>
+            <p class="lead"><strong>Wydział:</strong> {{ wydział }}</p>
+            <p class="lead"><strong>Kierunek:</strong> {{ kierunek }}</p>
+            <br>
+            <p class="lead">{{ pokoj_w_akademiku.id_pokoju }}</p>
+            <p class="lead"><strong>Data wyrejestrowania z akademika:</strong> {{ pokoj_w_akademiku.data_do }}</p>
+
+
         {% endblock info %}
-        <hr class="my-2">
         {% block res_links %}
-            <h2 style="display: flex; justify-content: center; align-content: center; margin-left: -1em" >Twoje rezerwacje</h2>
+            <h2 style="display: flex; justify-content: center; align-content: center; margin-left: -1em">Twoje
+                rezerwacje</h2>
             <div style="display: flex; justify-content: center; align-content: center">
-                <a class="btn btn-success" style="margin-right: 1em" href="{% url "user_accepted_reservations" %}">Zaakceptowane Rezerwacje</a>
-                <a class="btn btn-danger"  style="margin-right: 1em" href="{% url "user_declined_reservations" %}">Odrzucone rezerwacje</a>
-                <a class="btn btn-info "  style="margin-right: 1em" href="{% url "user_pending_reservations" %}">Nierozpatrzone rezerwacje</a>
+                <a class="btn btn-success" style="margin-right: 1em" href="{% url "user_accepted_reservations" %}">Zaakceptowane
+                    Rezerwacje</a>
+                <a class="btn btn-danger" style="margin-right: 1em" href="{% url "user_declined_reservations" %}">Odrzucone
+                    rezerwacje</a>
+                <a class="btn btn-info " style="margin-right: 1em" href="{% url "user_pending_reservations" %}">Nierozpatrzone
+                    rezerwacje</a>
             </div>
 
 

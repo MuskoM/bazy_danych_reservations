@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import RezerwacjaSali, Wydzial, Pomieszczenie, Sala, PracowaniaSpecjalistyczna, Laboratorium
 from .models import Pokoj, RezerwacjaPokoju, Akademik
-from .forms import UserForm, NewReservationForm, ChangeStatusForm
+from .forms import NewReservationForm, ChangeStatusForm
 from django.views import View
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def index(request):
-    return render(request, 'generic_site.html')
+    return render(request, 'reservations/index.html')
 
 
 def reservations(request):
@@ -53,6 +54,7 @@ def plan_wydzialu(request, wydzial_id):
     }
 
     return  render(request, 'reservations/sale_wydzialu.html', context)
+
 
 class Room_reservations(View):
     def get(self, request, wydzial_id, room_id):
@@ -100,6 +102,7 @@ class Room_reservations(View):
 
     def post(self, request, wydzial_id, room_id):
         new_reservation = NewReservationForm(request.POST)
+        print(new_reservation)
         if new_reservation.is_valid():
             new_reservation_form = new_reservation.save(commit=False)
             new_reservation_form.id_pomieszczenia = Pomieszczenie.objects.get(pk=room_id)
@@ -163,7 +166,7 @@ def user_pending_reservations(request):
     pending = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="R")
 
     context = {
-        "pending_user_reservations": pending,
+        "reservations_list": pending,
     }
 
     return render(request, 'reservations/user_reservations/user_pending_reservations.html', context)
@@ -175,7 +178,7 @@ def user_declined_reservations(request):
     declined = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="O")
 
     context = {
-        "declined_user_reservations": declined
+         "reservations_list": declined
     }
 
     return render(request, 'reservations/user_reservations/user_declined_reservations.html', context)
@@ -187,7 +190,7 @@ def user_accepted_reservations(request):
     accepted_reservations = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="Z")
 
     context = {
-        "accepted_user_reservations": accepted_reservations
+         "reservations_list": accepted_reservations
     }
 
     return render(request, 'reservations/user_reservations/user_accepted_reservations.html', context)
@@ -196,37 +199,66 @@ def user_accepted_reservations(request):
 @login_required
 def detailed_reservation(request,reservation_id):
     selected_reservation = RezerwacjaSali.objects.get(id_rezerwacji_sali=reservation_id);
+    type_of_room = selected_reservation.id_pomieszczenia.rodzaj_pom
+    wydzial_id = selected_reservation.id_pomieszczenia.id_wydzialu
+    print(type_of_room)
+    czy_rzutnik = False
+    no_seats = 0
+    aux_descrp = ""
+    rodzaj_pomieszczenia = ""
+    room_id = selected_reservation.id_pomieszczenia.id_pomieszczenia
+
+    if type_of_room == "L":
+        selected_classroom = Laboratorium.objects.get(id_wydzialu=wydzial_id, id_pomieszczenia=room_id)
+        no_seats = selected_classroom.ilosc_miejsc
+        rodzaj_pomieszczenia = "Laboratorium"
+        czy_rzutnik = selected_classroom.czy_rzutnik
+        aux_descrp = selected_classroom.osprzet
+
+    elif type_of_room == "S" or type_of_room == "A":
+        selected_classroom = Sala.objects.get(id_wydzialu=wydzial_id, id_pomieszczenia=room_id)
+        no_seats = selected_classroom.ilosc_miejsc
+        rodzaj_pomieszczenia = "Sala"
+        czy_rzutnik = selected_classroom.czy_rzutnik
+        aux_descrp = selected_classroom.jaka_tablica
+
+    elif type_of_room == "P":
+        selected_classroom = PracowaniaSpecjalistyczna.objects.get(id_wydzialu=wydzial_id, id_pomieszczenia=room_id)
+        no_seats = selected_classroom.ilosc_miejsc
+        rodzaj_pomieszczenia = "Pracownia"
+        czy_rzutnik = selected_classroom.czy_rzutnik
+        aux_descrp = selected_classroom.osprzet
 
     context = {
-        "reservation": selected_reservation.id_pomieszczenia,
+        "reservation": selected_reservation,
+        "no_seats": no_seats,
+        "isProjector": czy_rzutnik,
+        "aux_descr": aux_descrp,
+        "rodzaj_pomieszczenia": rodzaj_pomieszczenia
     }
 
     return render(request, 'reservations/detailed_reservation.html', context)
 
-# TODO: Zrobić POST request do usunięcia rezerwacji D z CRUD
 @login_required
 def resign_from_reservation(request,reservation_id):
 
-    selected_reservation = RezerwacjaSali.objects.get(id_rezerwacji_sali= reservation_id)
+    user_reservations = RezerwacjaSali.objects.filter(id_uzytkownika=request.user.uzytkownik)
+    selected_reservation = user_reservations.get(id_rezerwacji_sali=reservation_id)
+
+    selected_reservation.delete()
+
+    return redirect('profil')
 
 
-    context = {
-        "reservation": selected_reservation.id_pomieszczenia,
-    }
-
-    return render(request, 'reservations/detailed_reservation.html',context)
-
-# NIE POTRZEBNE, ZOSTAWIC NARAZIE
-@login_required
-def request_reservation(request,reservation_id):
-    return render(request, 'generic_site.html')
-
-
-# TODO: dodać informację o dacie wyrejestrowania z akademika oraz nr pokoju i nazwę akademika
 @login_required
 def detailed_profile(request):
 
     current_user = request.user
+    try:
+        rezerwacja_akademik = RezerwacjaPokoju.objects.get(id_uzytkownika=current_user.uzytkownik)
+    except ObjectDoesNotExist:
+        rezerwacja_akademik = "Nie mieszka w akademiku"
+
 
     context = {
         "name": current_user.uzytkownik.imie,
@@ -235,23 +267,14 @@ def detailed_profile(request):
         "kierunek": current_user.uzytkownik.student.id_kierunku,
         "wydział": current_user.uzytkownik.id_wydzialu,
         "telefon": current_user.uzytkownik.student.nr_telefonu,
-        "nr_indeksu": current_user.uzytkownik.student.nr_indeksu
+        "nr_indeksu": current_user.uzytkownik.student.nr_indeksu,
+        "pokoj_w_akademiku": rezerwacja_akademik
     }
 
     if request.user.is_staff:
         return render(request, 'reservations/admin_profile.html',context)
     else:
         return render(request, 'reservations/profile.html', context)
-
-
-@login_required
-def edit_profile(request):
-    # TODO: Zrobić formę do edycji profilu
-    # profile_form = UserForm(request.POST)
-    # if profile_form.is_valid():
-    #     new_profile_form = profile_form.save(commit=False)
-    #     profile_form.save()
-    return render(request, 'reservations/edit_profile.html')
 
 
 def akademiki(request):
