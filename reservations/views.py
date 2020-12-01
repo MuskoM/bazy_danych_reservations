@@ -6,6 +6,8 @@ from .forms import NewReservationForm, ChangeStatusForm
 from django.views import View
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
+from datetime import timedelta
 
 
 def index(request):
@@ -15,9 +17,17 @@ def index(request):
 def reservations(request):
     # TODO: kalendarz insert
 
-    all_reservations = RezerwacjaSali.objects.all()
+    accepted_reservations = RezerwacjaSali.objects.filter(status="Z")
+
+    next_week_reservations = accepted_reservations.filter(data_od__gt=timezone.now()+timedelta(days=7),
+                                                   data_od__lte=timezone.now()+timedelta(days=14)).order_by("data_od")
+    tomorrow_reservations = accepted_reservations.filter(data_od__gt=timezone.now(),
+                                                    data_od__lte=timezone.now()+timedelta(days=1)).order_by("data_od")
+
     context = {
-        "lista_rezerwacji": all_reservations
+        "lista_rezerwacji": accepted_reservations,
+        "next_week_reservations": next_week_reservations,
+        "tomorrow_reservations": tomorrow_reservations
     }
 
     return render(request, 'reservations/reservation_list.html', context)

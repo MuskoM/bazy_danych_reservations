@@ -2,13 +2,36 @@
 
 
 {% block contents %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "reservations/css/reservations.css" %}">
+    <h1 class="display-3">Rezerwacje</h1>
+    <div class="reservations-container">
+        <div class="first-div">
+
+            <h2 class="display-4">Jutro</h2>
+
+            {% for reservation in tomorrow_reservations %}
+
+                <p class="lead">{{ reservation.id_pomieszczenia }} {{ reservation.data_od.time }} {{ reservation.data_do.time }}</p>
+
+            {% endfor %}
+        </div>
+
+        <div class="second-div">
+
+            <h2 class="display-4">Następny tydzień</h2>
+
+            {% for element in next_week_reservations %}
+
+                <p class="lead">{{ element.id_pomieszczenia }} od {{ element.data_od }} do {{ element.data_do }}</p>
+
+            {% endfor %}
+
+        </div>
+    </div>
 
 
 
-    {% for element in lista_rezerwacji %}
 
-        <p>{{ element.id_pomieszczenia }} od {{ element.data_od.time }} do {{ element.data_do.time }}</p>
-
-    {% endfor %}
 
 {% endblock contents %}
