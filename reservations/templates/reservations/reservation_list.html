@@ -3,6 +3,8 @@
 
 {% block contents %}
 
+
+
     {% for element in lista_rezerwacji %}
 
         <p>{{ element.id_pomieszczenia }} od {{ element.data_od.time }} do {{ element.data_do.time }}</p>

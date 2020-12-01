@@ -13,6 +13,7 @@ def index(request):
 
 def reservations(request):
     # TODO: kalendarz insert
+
     all_reservations = RezerwacjaSali.objects.all()
     context = {
         "lista_rezerwacji": all_reservations
@@ -149,38 +150,38 @@ def accepted_reservations(request):
 @login_required
 def user_pending_reservations(request):
 
-    user_id = request.user.uzytkownik.id
+    user_id = request.user.uzytkownik
     pending = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="R")
 
     context = {
         "pending_user_reservations": pending,
     }
 
-    return render(request, 'reservations/user_pending_reservations_list.html', context)
+    return render(request, 'reservations/user_reservations/user_pending_reservations.html', context)
 
 
 @login_required
 def user_declined_reservations(request):
-    user_id = request.user.uzytkownik.id
+    user_id = request.user.uzytkownik
     declined = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="O")
 
     context = {
         "declined_user_reservations": declined
     }
 
-    return render(request, 'reservations/user_declined_reservations_list.html', context)
+    return render(request, 'reservations/user_reservations/user_declined_reservations.html', context)
 
 
 @login_required
 def user_accepted_reservations(request):
-    user_id = request.user.uzytkownik.id
+    user_id = request.user.uzytkownik
     accepted_reservations = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="Z")
 
     context = {
         "accepted_user_reservations": accepted_reservations
     }
 
-    return render(request, 'reservations/user_accepted_reservations_list.html', context)
+    return render(request, 'reservations/user_reservations/user_accepted_reservations.html', context)
 
 
 @login_required
@@ -228,7 +229,10 @@ def detailed_profile(request):
         "nr_indeksu": current_user.uzytkownik.student.nr_indeksu
     }
 
-    return render(request, 'reservations/profile.html', context)
+    if request.user.is_staff:
+        return render(request, 'reservations/admin_profile.html',context)
+    else:
+        return render(request, 'reservations/profile.html', context)
 
 
 @login_required
