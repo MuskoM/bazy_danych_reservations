@@ -42,7 +42,21 @@
 
         #navbar {
             background: rgb(230, 232, 236);
+            color: green;
         }
+
+        #navbar  a:visited{
+            color: green;
+        }
+
+        #navbar  a:link{
+            color: green;
+        }
+
+        #navbar a:hover{
+            color: black;
+        }
+
     </style>
 
 
@@ -89,7 +103,7 @@
                     </div>
                     </div>
                     {% if user.is_authenticated %}
-                        <span style="margin-right: 4px; font-family: Helvetica,monospace; font-size: medium"> {{ user.get_username }} </span>
+                        <span style="margin-right: 4px; font-family: Helvetica,monospace; font-size: medium">Hej, {{ user.get_username }} </span>
                         <a href="{% url 'logout' %}?next={{ request.path }}">
                             <button type="button" class="btn btn-danger btn-sm">Logout</button>
                         </a>
