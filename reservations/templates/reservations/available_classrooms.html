@@ -2,8 +2,8 @@
 
 {% block contents %}
 
-    <h2 align="center">Wydziały Politechniki Białostockiej</h2>
-    <!-- TODO fajnie by bylo wysrodkoweac te przyciski-->
+    <h1 align="center">Wydziały Politechniki Białostockiej</h1>
+<div class="text-center">
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
         {% for wydzial in wydzialy %}
             <button type="button" class="btn btn-outline-primary">
@@ -11,7 +11,6 @@
             </button>
         {% endfor %}
     </div>
-
-
+</div>
 
 {% endblock %}
