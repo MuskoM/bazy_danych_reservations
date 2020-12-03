@@ -187,7 +187,7 @@ class Pending_room_reservations(View):
             "reservations_list": pending
         }
 
-        return render(request, 'reservations/admin_reservations/pending_reservations_list.html', context)
+        return render(request, 'reservations/admin_reservations/pending_room_reservations_list.html', context)
 
     def post(self, request, reservation_id):
         new_status = ChangeStatusForm(request.POST)
