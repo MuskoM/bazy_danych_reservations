@@ -30,9 +30,11 @@ urlpatterns += [
          name="reservation_temp"),
     path('admin/declined_reservations/', views.declined_reservations, name="declined_reservations"),
     path('admin/accepted_reservations/', views.accepted_reservations, name="accepted_reservations"),
+
     path('admin/pending_room_reservations/', login_required(Pending_room_reservations.as_view()), name="pending_room_reservations"),
     path('admin/pending_room_reservations/reservation=<int:reservation_id>/', login_required(Pending_room_reservations.as_view()),
          name="temp_reservation_room"),
+
     path('admin/declined_room_reservations/', views.declined_room_reservations, name="declined_room_reservations"),
     path('admin/accepted_room_reservations/', views.accepted_room_reservations, name="accepted_room_reservations"),
     # user sitee
@@ -40,9 +42,12 @@ urlpatterns += [
     path('user/declined_reservations/', views.user_declined_reservations, name="user_declined_reservations"),
     path('user/accepted_reservations/', views.user_accepted_reservations, name="user_accepted_reservations"),
 
-    path('user/pending_room_reservations/', views.user_pending_room_reservations, name="user_pending_room_reservations"),
-    path('user/declined_room_reservations/', views.user_declined_room_reservations, name="user_declined_room_reservations"),
-    path('user/accepted_room_reservations/', views.user_accepted_room_reservations, name="user_accepted_room_reservations"),
+    path('user/pending_room_reservations/', views.user_pending_room_reservations,
+         name="user_pending_room_reservations"),
+    path('user/declined_room_reservations/', views.user_declined_room_reservations,
+         name="user_declined_room_reservations"),
+    path('user/accepted_room_reservations/', views.user_accepted_room_reservations,
+         name="user_accepted_room_reservations"),
 
     # Szczegóły już zarezerwowanych sal
     path('user/all_reservations/res=<int:reservation_id>/detail', views.detailed_reservation,
