@@ -7,7 +7,7 @@
 
     <table>
         {% for reservation in lista_rezerwacji %}
-            <form action="{% url 'reservation_temp' reservation %}" method="POST" role="form">
+            <form action="{% url 'temp_reservation_room' reservation %}" method="POST" role="form">
                         {% csrf_token %}
             <tr>
                 <td>

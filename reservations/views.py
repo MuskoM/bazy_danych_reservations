@@ -187,7 +187,7 @@ class Pending_room_reservations(View):
             "reservations_list": pending
         }
 
-        return render(request, 'reservations/admin_reservations/pending_reservations_list.html', context)
+        return render(request, 'reservations/admin_reservations/pending_room_reservations_list.html', context)
 
     def post(self, request, reservation_id):
         new_status = ChangeStatusForm(request.POST)
@@ -280,7 +280,7 @@ def user_accepted_reservations(request):
 @login_required
 def user_pending_room_reservations(request):
     user_id = request.user.uzytkownik
-    pending = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="R")
+    pending = RezerwacjaPokoju.objects.filter(id_uzytkownika=user_id, status="R")
 
     context = {
         "reservations_list": pending,
@@ -292,7 +292,7 @@ def user_pending_room_reservations(request):
 @login_required
 def user_declined_room_reservations(request):
     user_id = request.user.uzytkownik
-    declined = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="O")
+    declined = RezerwacjaPokoju.objects.filter(id_uzytkownika=user_id, status="O")
 
     context = {
         "reservations_list": declined
@@ -304,14 +304,13 @@ def user_declined_room_reservations(request):
 @login_required
 def user_accepted_room_reservations(request):
     user_id = request.user.uzytkownik
-    accepted_reservations = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="Z")
+    accepted_reservations = RezerwacjaPokoju.objects.filter(id_uzytkownika=user_id, status="Z")
 
     context = {
         "reservations_list": accepted_reservations
     }
 
     return render(request, 'reservations/user_reservations/user_accepted_room_reservations_list.html', context)
-
 
 
 @login_required
