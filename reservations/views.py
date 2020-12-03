@@ -179,6 +179,26 @@ class Pending_reservations(View):
         return redirect(request.META.get('HTTP_REFERER'))
 
 
+class Pending_room_reservations(View):
+    def get(self, request):
+        pending = RezerwacjaPokoju.objects.filter(status="R")
+        pending = pending.order_by("data_od")
+        context = {
+            "reservations_list": pending
+        }
+
+        return render(request, 'reservations/admin_reservations/pending_reservations_list.html', context)
+
+    def post(self, request, reservation_id):
+        new_status = ChangeStatusForm(request.POST)
+        reservation = RezerwacjaPokoju.objects.get(pk=reservation_id)
+        if new_status.is_valid():
+            reservation.status = new_status.cleaned_data['status']
+            reservation.save()
+
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
 @login_required
 def declined_reservations(request):
     declined = RezerwacjaSali.objects.filter(status="O")
@@ -192,6 +212,27 @@ def declined_reservations(request):
 @login_required
 def accepted_reservations(request):
     accepted = RezerwacjaSali.objects.filter(status="Z")
+
+    context = {
+        "reservations_list": accepted,
+    }
+
+    return render(request, 'reservations/admin_reservations/accepted_reservations_list.html', context)
+
+
+@login_required
+def declined_room_reservations(request):
+    declined = RezerwacjaPokoju.objects.filter(status="O")
+    context = {
+        "reservations_list": declined,
+    }
+
+    return render(request, 'reservations/admin_reservations/declined_reservations_list.html', context)
+
+
+@login_required
+def accepted_room_reservations(request):
+    accepted = RezerwacjaPokoju.objects.filter(status="Z")
 
     context = {
         "reservations_list": accepted,
@@ -234,6 +275,43 @@ def user_accepted_reservations(request):
     }
 
     return render(request, 'reservations/user_reservations/user_accepted_reservations.html', context)
+
+
+@login_required
+def user_pending_room_reservations(request):
+    user_id = request.user.uzytkownik
+    pending = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="R")
+
+    context = {
+        "reservations_list": pending,
+    }
+
+    return render(request, 'reservations/user_reservations/user_pending_room_reservations_list.html', context)
+
+
+@login_required
+def user_declined_room_reservations(request):
+    user_id = request.user.uzytkownik
+    declined = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="O")
+
+    context = {
+        "reservations_list": declined
+    }
+
+    return render(request, 'reservations/user_reservations/user_declined_room_reservations_list.html', context)
+
+
+@login_required
+def user_accepted_room_reservations(request):
+    user_id = request.user.uzytkownik
+    accepted_reservations = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="Z")
+
+    context = {
+        "reservations_list": accepted_reservations
+    }
+
+    return render(request, 'reservations/user_reservations/user_accepted_room_reservations_list.html', context)
+
 
 
 @login_required

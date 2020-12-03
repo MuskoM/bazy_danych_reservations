@@ -1,0 +1,39 @@
+{% extends "generic_site.html" %}
+
+{% block contents %}
+{% block title %}
+    <h1 align="center">Rezerwacje do zaakceptowania</h1>
+{% endblock title %}
+
+    <table>
+        {% for reservation in lista_rezerwacji %}
+            <form action="{% url 'reservation_temp' reservation %}" method="POST" role="form">
+                        {% csrf_token %}
+            <tr>
+                <td>
+                    <hr style="height: 2px; background: black">
+                    <ul style="list-style-type:none">
+                        <li name="data_do"><strong>Poczatek rezerwacji:</strong> {{ reservation.data_od }}</li>
+                        <li name="data_do"><strong>Koniec rezerwacji:</strong> {{ reservation.data_do }}</li>
+                        <li><strong>Pokój:</strong> {{ reservation.opis }}</li>
+                        <li name="id_uzytkownika"><strong>Rezerwacji dodkonal:</strong> {{ reservation.id_uzytkownika }}</li>
+                        <li name="data_wykonania_rezerwacji"><strong>Dnia:</strong> {{ reservation.data_wykonania_rezerwacji }}</li>
+                    </ul>
+                </td>
+
+                <td>
+                    {% block buttons %}
+                        <div style="float: left;">
+                            <button name="status" value="Z" type="submit" class="btn btn-success">Zezwol</button>
+                            <button name="status" value="O" type="submit" class="btn btn-danger">Zabroń</button>
+                        </div>
+
+                    {% endblock %}
+                </td>
+            </tr>
+            </form>
+        {% endfor %}
+    </table>
+    <hr style="height: 2px; background: black">
+
+{% endblock %}

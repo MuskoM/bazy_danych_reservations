@@ -29,6 +29,17 @@
                     rezerwacje</a>
             </div>
 
+            <h2 style="display: flex; justify-content: center; align-content: center; margin-left: -1em">Twoje
+                rezerwacje pokoi</h2>
+            <div style="display: flex; justify-content: center; align-content: center; margin-bottom: 2em">
+                <a class="btn btn-success" style="margin-right: 1em" href="{% url "user_accepted_room_reservations" %}">Zaakceptowane
+                    Rezerwacje</a>
+                <a class="btn btn-danger" style="margin-right: 1em" href="{% url "user_declined_room_reservations" %}">Odrzucone
+                    rezerwacje</a>
+                <a class="btn btn-info " style="margin-right: 1em" href="{% url "user_pending_room_reservations" %}">Nierozpatrzone
+                    rezerwacje</a>
+            </div>
+
 
         {% endblock res_links %}
     </div>

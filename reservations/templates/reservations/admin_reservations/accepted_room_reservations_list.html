@@ -1,0 +1,11 @@
+{% extends "reservations/admin_reservations/pending_room_reservations_list.html" %}
+
+{% block title %}
+    <h1 align="center">Rezerwacje zaakceptowane</h1>
+{% endblock title %}
+
+{% block buttons %}
+    <div style="float: left;">
+        <button name="status" value="O" type="submit" class="btn btn-danger">Zabroń</button>
+    </div>
+{% endblock %}
