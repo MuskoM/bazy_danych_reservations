@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 
 class Wydzial(models.Model):
@@ -54,6 +55,7 @@ class Student(models.Model):
     class Meta:
         verbose_name_plural = "Studenci"
 
+
 class Pomieszczenie(models.Model):
     type_of_classroom = (
         ("S", "Sala"),
@@ -86,14 +88,22 @@ class RezerwacjaSali(models.Model):
     status = models.CharField(max_length=1, choices=status_labels, default="R")
     data_od = models.DateTimeField()
     data_do = models.DateTimeField()
-    id_uzytkownika = models.ForeignKey(Uzytkownik,related_name="rezerwacje_sal", on_delete=models.CASCADE)
+    id_uzytkownika = models.ForeignKey(Uzytkownik, related_name="rezerwacje_sal", on_delete=models.CASCADE)
     data_wykonania_rezerwacji = models.DateTimeField(default=datetime.now())
+    
+    def save(self, *args, **kwargs):
+        if self.data_od < datetime.now() or self.data_do < datetime.now():
+            raise ValidationError("Nie można użyć daty z przeszłości!")
+        if self.data_od > self.data_do:
+            raise ValidationError("Data początku rezerwacji poźniejsza od daty końca rezerwacji!")
+        super(RezerwacjaSali, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.id_rezerwacji_sali}'
 
     class Meta:
         verbose_name_plural = "Rezerwacje Sal"
+
 
 class PracowaniaSpecjalistyczna(Pomieszczenie):
     nr_pracowni = models.AutoField(primary_key=True)
@@ -147,7 +157,7 @@ class Akademik(models.Model):
 
 class Pokoj(models.Model):
     id_pokoju = models.AutoField(primary_key=True)
-    id_akademika = models.ForeignKey(Akademik,on_delete=models.CASCADE)
+    id_akademika = models.ForeignKey(Akademik, on_delete=models.CASCADE)
     ilosc_lozek = models.IntegerField()
     opis = models.TextField()
 
@@ -159,12 +169,26 @@ class Pokoj(models.Model):
 
 
 class RezerwacjaPokoju(models.Model):
+    status_labels = (
+        ("Z", "Zaakceptowana"),
+        ("O", "Odrzucona"),
+        ("R", "W trakcie rozpatrywania")
+    )
+
     id_rezerwacji_pokoju = models.AutoField(primary_key=True)
-    id_pokoju = models.ForeignKey(Pokoj,on_delete=models.CASCADE)
+    id_pokoju = models.ForeignKey(Pokoj, on_delete=models.CASCADE)
     data_od = models.DateTimeField()
     data_do = models.DateTimeField()
     id_uzytkownika = models.ForeignKey(Uzytkownik, on_delete=models.CASCADE)
     data_wykonania_rezerwacji = models.DateTimeField(default=datetime.now())
+    status = models.CharField(max_length=1, choices=status_labels, default="R")
+
+    def save(self, *args, **kwargs):
+        if self.data_od < datetime.now() or self.data_do < datetime.now():
+            raise ValidationError("Nie można użyć daty z przeszłości!")
+        if self.data_od > self.data_do:
+            raise ValidationError("Data początku rezerwacji poźniejsza od daty końca rezerwacji!")
+        super(RezerwacjaPokoju, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'Rezerwacja: {self.id_rezerwacji_pokoju} Użytkownik {self.id_uzytkownika}'

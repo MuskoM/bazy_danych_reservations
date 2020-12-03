@@ -7,72 +7,76 @@
         <div>
             <h4>Aule wykładowe</h4>
             <ul class="nav nav-pills">
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="true" aria-expanded="false">
                         Wybierz
                     </a>
-                        {% for hall in lecture_hall_list%}
+                    {% for hall in lecture_hall_list %}
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{% url 'sala' id_wydzialu hall.id_pomieszczenia %}">
-                            {{ hall.opis }}
+                                {{ hall.opis }}
                             </a>
                         </div>
-                        {% endfor %}
-                    </li>
-                </ul>
+                    {% endfor %}
+                </li>
+            </ul>
         </div>
         <div>
             <h4>Sale</h4>
             <ul class="nav nav-pills">
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="true" aria-expanded="false">
                         Wybierz
                     </a>
-                        <div class="dropdown-menu">
-                            {% for class in class_list%}
-                                <a class="dropdown-item" href="{% url 'sala' id_wydzialu class.id_pomieszczenia %}">
-                                    {{ class.opis }}
-                                </a>
-                            {% endfor %}
-                        </div>
+                    <div class="dropdown-menu">
+                        {% for class in class_list %}
+                            <a class="dropdown-item" href="{% url 'sala' id_wydzialu class.id_pomieszczenia %}">
+                                {{ class.opis }}
+                            </a>
+                        {% endfor %}
+                    </div>
 
-                    </li>
-                </ul>
+                </li>
+            </ul>
         </div>
         <div>
             <h4>Laboratoria</h4>
-             <ul class="nav nav-pills">
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <ul class="nav nav-pills">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="true" aria-expanded="false">
                         Wybierz
                     </a>
-                        <div class="dropdown-menu">
-                            {% for lab in labs_list%}
-                                <a class="dropdown-item" href="{% url 'sala' id_wydzialu lab.id_pomieszczenia %}">
-                                    {{ lab.opis }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </li>
-                </ul>
+                    <div class="dropdown-menu">
+                        {% for lab in labs_list %}
+                            <a class="dropdown-item" href="{% url 'sala' id_wydzialu lab.id_pomieszczenia %}">
+                                {{ lab.opis }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
         </div>
         <div>
             <h4>Pracownie</h4>
             <ul class="nav nav-pills">
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="true" aria-expanded="false">
                         Wybierz
                     </a>
-                        <div class="dropdown-menu">
-                            {% for workroom in workroom_list%}
-                                <a class="dropdown-item" href="{% url 'sala' id_wydzialu workroom.id_pomieszczenia %}">
-                                    {{ workroom.opis }}
-                                </a>
-                            {% endfor %}
-                        </div>
+                    <div class="dropdown-menu">
+                        {% for workroom in workroom_list %}
+                            <a class="dropdown-item" href="{% url 'sala' id_wydzialu workroom.id_pomieszczenia %}">
+                                {{ workroom.opis }}
+                            </a>
+                        {% endfor %}
+                    </div>
 
-                    </li>
-                </ul>
+                </li>
+            </ul>
 
         </div>
     </div>

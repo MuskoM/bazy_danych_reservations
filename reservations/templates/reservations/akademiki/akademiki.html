@@ -3,10 +3,16 @@
 
 {% block contents %}
 
-    {% for akademik in lista_akademikow %}
-
-        <h2>{{ akademik }}</h2>
-
-    {% endfor %}
+    <h1 align="center">Akademiki Politechniki Białostockiej</h1>
+    <div class="text-center">
+        <hr>
+        <br>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            {% for akademik in lista_akademikow %}
+                <a type="button" class="btn btn-outline-success"
+                   href="{% url 'akademik' akademik.id_akademika %}">{{ akademik }}</a>
+            {% endfor %}
+        </div>
+    </div>
 
 {% endblock contents %}

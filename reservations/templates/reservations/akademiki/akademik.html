@@ -3,12 +3,26 @@
 
 {% block contents %}
 
-    <h1>{{ nazwa_akademika }}</h1>
-
-    {% for pokoj in lista_pokoi %}
-
-        <h3>{{ pokoj }}</h3>
-
-    {% endfor %}
+    <h1 align="center">Dom studenta "{{ nazwa_akademika }}"</h1>
+    <div class="inline-group">
+        <div>
+            <h4>Pokoje</h4>
+            <ul class="nav nav-pills">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="true" aria-expanded="false">
+                        Wybierz
+                    </a>
+                    {% for room in lista_pokoi %}
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'pokoj' nazwa_akademika.id_akademika room.id_pokoju %}">
+                                {{ room }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                </li>
+            </ul>
+        </div>
+    </div>
 
 {% endblock contents %}

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import RezerwacjaSali, Wydzial, Pomieszczenie, Sala, PracowaniaSpecjalistyczna, Laboratorium
 from .models import Pokoj, RezerwacjaPokoju, Akademik
-from .forms import NewReservationForm, ChangeStatusForm
+from .forms import NewReservationForm, ChangeStatusForm, NewRoomReservationForm, ChangeRoomStatusForm
 from django.views import View
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -19,10 +19,12 @@ def reservations(request):
 
     accepted_reservations = RezerwacjaSali.objects.filter(status="Z")
 
-    next_week_reservations = accepted_reservations.filter(data_od__gt=timezone.now()+timedelta(days=7),
-                                                   data_od__lte=timezone.now()+timedelta(days=14)).order_by("data_od")
+    next_week_reservations = accepted_reservations.filter(data_od__gt=timezone.now() + timedelta(days=7),
+                                                          data_od__lte=timezone.now() + timedelta(days=14)).order_by(
+        "data_od")
     tomorrow_reservations = accepted_reservations.filter(data_od__gt=timezone.now(),
-                                                    data_od__lte=timezone.now()+timedelta(days=1)).order_by("data_od")
+                                                         data_od__lte=timezone.now() + timedelta(days=1)).order_by(
+        "data_od")
 
     context = {
         "lista_rezerwacji": accepted_reservations,
@@ -35,14 +37,14 @@ def reservations(request):
 
 # TODO: Wydziały do wyboru dla niezalogowanych użytkowników
 def rooms(request):
-
     wydzialy = Wydzial.objects.all()
 
     context = {
-        "wydzialy" : wydzialy
+        "wydzialy": wydzialy
     }
 
-    return render(request, 'reservations/available_classrooms.html',context)
+    return render(request, 'reservations/available_classrooms.html', context)
+
 
 def plan_wydzialu(request, wydzial_id):
     id_wydzialu = wydzial_id
@@ -63,7 +65,7 @@ def plan_wydzialu(request, wydzial_id):
         "lecture_hall_list": lecture_hall_list
     }
 
-    return  render(request, 'reservations/sale_wydzialu.html', context)
+    return render(request, 'reservations/sale_wydzialu.html', context)
 
 
 class Room_reservations(View):
@@ -120,14 +122,45 @@ class Room_reservations(View):
             new_reservation_form.data_od = new_reservation.cleaned_data['data_od']
             new_reservation_form.data_do = new_reservation.cleaned_data['data_do']
             new_reservation.save()
-            messages.success(request, 'Pomyślnie dodkonano rezerwacji!!')
+            messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
 
         return redirect('sala', wydzial_id, room_id)
 
 
+class Dormitory_Room_reservations(View):
+    def get(self, request, id_akademika, id_pokoju):
+        selected_room = Pokoj.objects.get(id_akademika=id_akademika, id_pokoju=id_pokoju)
+        nr_pom = selected_room.id_pokoju
+
+        room_reservations_list = RezerwacjaPokoju.objects.filter(id_pokoju=id_pokoju, status='Z')
+        room_reservations_list = room_reservations_list.order_by("data_od")
+
+        context = {
+            "akademik_id": id_akademika,
+            "selected_room": selected_room,
+            "nr_pom": nr_pom,
+            "lista_rezerwacji": room_reservations_list
+        }
+
+        return render(request, 'reservations/akademiki/pokoj.html', context)
+
+    def post(self, request, id_akademika, id_pokoju):
+        new_reservation = NewRoomReservationForm(request.POST)
+        print(new_reservation)
+        if new_reservation.is_valid():
+            new_reservation_form = new_reservation.save(commit=False)
+            new_reservation_form.id_pomieszczenia = Pomieszczenie.objects.get(pk=id_pokoju)
+            new_reservation_form.id_uzytkownika = request.user.uzytkownik
+            new_reservation_form.data_od = new_reservation.cleaned_data['data_od']
+            new_reservation_form.data_do = new_reservation.cleaned_data['data_do']
+            new_reservation.save()
+            messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
+
+        return redirect('sala', id_akademika, id_pokoju)
+
+
 class Pending_reservations(View):
     def get(self, request):
-
         pending = RezerwacjaSali.objects.filter(status="R")
         pending = pending.order_by("data_od")
         context = {
@@ -146,10 +179,8 @@ class Pending_reservations(View):
         return redirect(request.META.get('HTTP_REFERER'))
 
 
-
 @login_required
 def declined_reservations(request):
-
     declined = RezerwacjaSali.objects.filter(status="O")
     context = {
         "reservations_list": declined,
@@ -171,7 +202,6 @@ def accepted_reservations(request):
 
 @login_required
 def user_pending_reservations(request):
-
     user_id = request.user.uzytkownik
     pending = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="R")
 
@@ -188,7 +218,7 @@ def user_declined_reservations(request):
     declined = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="O")
 
     context = {
-         "reservations_list": declined
+        "reservations_list": declined
     }
 
     return render(request, 'reservations/user_reservations/user_declined_reservations.html', context)
@@ -200,14 +230,14 @@ def user_accepted_reservations(request):
     accepted_reservations = RezerwacjaSali.objects.filter(id_uzytkownika=user_id, status="Z")
 
     context = {
-         "reservations_list": accepted_reservations
+        "reservations_list": accepted_reservations
     }
 
     return render(request, 'reservations/user_reservations/user_accepted_reservations.html', context)
 
 
 @login_required
-def detailed_reservation(request,reservation_id):
+def detailed_reservation(request, reservation_id):
     selected_reservation = RezerwacjaSali.objects.get(id_rezerwacji_sali=reservation_id);
     type_of_room = selected_reservation.id_pomieszczenia.rodzaj_pom
     wydzial_id = selected_reservation.id_pomieszczenia.id_wydzialu
@@ -249,9 +279,9 @@ def detailed_reservation(request,reservation_id):
 
     return render(request, 'reservations/detailed_reservation.html', context)
 
-@login_required
-def resign_from_reservation(request,reservation_id):
 
+@login_required
+def resign_from_reservation(request, reservation_id):
     user_reservations = RezerwacjaSali.objects.filter(id_uzytkownika=request.user.uzytkownik)
     selected_reservation = user_reservations.get(id_rezerwacji_sali=reservation_id)
 
@@ -262,13 +292,11 @@ def resign_from_reservation(request,reservation_id):
 
 @login_required
 def detailed_profile(request):
-
     current_user = request.user
     try:
         rezerwacja_akademik = RezerwacjaPokoju.objects.get(id_uzytkownika=current_user.uzytkownik)
     except ObjectDoesNotExist:
         rezerwacja_akademik = "Nie mieszka w akademiku"
-
 
     context = {
         "name": current_user.uzytkownik.imie,
@@ -282,42 +310,39 @@ def detailed_profile(request):
     }
 
     if request.user.is_staff:
-        return render(request, 'reservations/admin_profile.html',context)
+        return render(request, 'reservations/admin_profile.html', context)
     else:
         return render(request, 'reservations/profile.html', context)
 
 
 def akademiki(request):
-
     lista_akademikow = Akademik.objects.all()
 
     context = {
         "lista_akademikow": lista_akademikow
     }
 
-    return render(request,'reservations/akademiki/akademiki.html',context)
+    return render(request, 'reservations/akademiki/akademiki.html', context)
 
 
-def akademik(request,id_akademika):
-
+def akademik(request, id_akademika):
     nazwa_akademika = Akademik.objects.get(id_akademika=id_akademika)
     lista_pokoi = Pokoj.objects.filter(id_akademika=id_akademika)
 
     context = {
-        "nazwa_akademika":nazwa_akademika,
+        "nazwa_akademika": nazwa_akademika,
         "lista_pokoi": lista_pokoi
     }
 
-    return render(request, 'reservations/akademiki/akademik.html',context)
+    return render(request, 'reservations/akademiki/akademik.html', context)
 
 
-def pokoj(request,id_akademika,id_pokoju):
-
-    selected_room = Pokoj.objects.get(id_akademika=id_akademika,id_pokoju=id_pokoju)
+def pokoj(request, id_akademika, id_pokoju):
+    selected_room = Pokoj.objects.get(id_akademika=id_akademika, id_pokoju=id_pokoju)
     nazwa_pokoju = selected_room.opis
 
     context = {
-        "nazwa_pokoju": selected_room
+        "nazwa_pokoju": nazwa_pokoju
     }
 
-    return render(request, 'reservations/akademiki/pokoj.html',context)
+    return render(request, 'reservations/selected_room.html', context)
