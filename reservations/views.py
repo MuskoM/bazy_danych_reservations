@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from datetime import timedelta
+from django.core.exceptions import ValidationError
 
 
 def index(request):
@@ -121,8 +122,12 @@ class Room_reservations(View):
             new_reservation_form.id_uzytkownika = request.user.uzytkownik
             new_reservation_form.data_od = new_reservation.cleaned_data['data_od']
             new_reservation_form.data_do = new_reservation.cleaned_data['data_do']
-            new_reservation.save()
-            messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
+
+            try:
+                new_reservation.save()
+                messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
+            except ValidationError:
+                messages.error(request, 'Nie dokonano rezerwacji!! Wybrano datę z przeszłośći')
 
         return redirect('sala', wydzial_id, room_id)
 
@@ -149,14 +154,18 @@ class Dormitory_Room_reservations(View):
         print(new_reservation)
         if new_reservation.is_valid():
             new_reservation_form = new_reservation.save(commit=False)
-            new_reservation_form.id_pomieszczenia = Pomieszczenie.objects.get(pk=id_pokoju)
+            new_reservation_form.id_pokoju = Pokoj.objects.get(pk=id_pokoju)
             new_reservation_form.id_uzytkownika = request.user.uzytkownik
             new_reservation_form.data_od = new_reservation.cleaned_data['data_od']
             new_reservation_form.data_do = new_reservation.cleaned_data['data_do']
-            new_reservation.save()
-            messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
 
-        return redirect('sala', id_akademika, id_pokoju)
+            try:
+                new_reservation.save()
+                messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
+            except ValidationError:
+                messages.error(request, 'Nie dokonano rezerwacji!! Wybrano datę z przeszłośći')
+
+        return redirect('pokoj', id_akademika, id_pokoju)
 
 
 class Pending_reservations(View):
