@@ -1,0 +1,17 @@
+{% extends "generic_site.html" %}
+
+{% block contents %}
+
+    <h2 class="display-4"> Jest to rezerwacja nr. {{ reservation.id_rezerwacji_pokoju }}</h2>
+    <h3 class="lead text-info"> Zarezerwowano od {{ reservation.data_od }}</h3>
+    <h3 class="lead text-info"> Zarezerwowano do {{ reservation.data_do }}</h3>
+    <hr>
+    <h3 class="lead"> Rezerwację wykonano {{ reservation.data_wykonania_rezerwacji }}</h3>
+    <h3 class="lead"> Dla pokoju {{ reservation.id_pokoju.id_pokoju }} w akademiku
+        {{ reservation.id_pokoju.id_akademika }}</h3>
+    <hr>
+    <h3 class="display-4">Szczegóły pomieszczenia</h3>
+    <p class="leads"><strong>Liczba łóżek:</strong> {{ beds_amount }}</p>
+    <p class="leads"><strong>Opis:</strong></p>
+    <p class="leads">{{ description }}</p>
+{% endblock contents %}

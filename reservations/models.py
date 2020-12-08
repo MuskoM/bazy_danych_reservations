@@ -191,7 +191,8 @@ class RezerwacjaPokoju(models.Model):
         super(RezerwacjaPokoju, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'Rezerwacja: {self.id_rezerwacji_pokoju} Użytkownik {self.id_uzytkownika}'
+        #return f'Rezerwacja: {self.id_rezerwacji_pokoju} Użytkownik {self.id_uzytkownika}'
+        return f'{self.id_rezerwacji_pokoju}'
 
     class Meta:
         verbose_name_plural = "Rezerwacje Pokoi"

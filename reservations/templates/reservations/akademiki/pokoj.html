@@ -3,7 +3,9 @@
 {% block contents %}
 
     <div align="center">
-        <h1>Pokój {{ nazwa_pokoju }}</h1>
+        <h1>{{ selected_room }}</h1>
+        <h5>Ilość łóżek: {{ ilosc_lozek }}</h5>
+        <h5>Opis pokoju: {{ opis }}</h5>
 
         <h4>Aktualne rezerwacje:</h4>
         {% if not lista_rezerwacji %}
@@ -42,18 +44,12 @@
     </form>
 
     {% if messages %}
-    {% for message in messages %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <div class="alert alert-dismissible alert-danger messages">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <div class="alert alert-dismissible alert-success messages">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {% for message in messages %}
                 <strong> {{ message }}</strong>
-        {% else %}
-            <div class="alert alert-dismissible alert-success messages">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong> {{ message }}</strong>
-        {% endif %}
-    {% endfor %}
-            </div>
+            {% endfor %}
+        </div>
     {% endif %}
 
 {% endblock %}

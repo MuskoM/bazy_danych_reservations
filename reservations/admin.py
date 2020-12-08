@@ -28,15 +28,15 @@ class RezerwacjaSaliAdmin(admin.ModelAdmin):
 
 
 class PracowaniaSpecjalistycznaAdmin(admin.ModelAdmin):
-    list_display = ['nr_pracowni','ilosc_miejsc','czy_rzutnik','osprzet']
+    list_display = ['nr_pracowni', 'id_wydzialu','ilosc_miejsc','czy_rzutnik','osprzet']
 
 
 class SalaAdmin(admin.ModelAdmin):
-    list_display = ['nr_sali','ilosc_miejsc','czy_rzutnik','jaka_tablica']
+    list_display = ['nr_sali', 'id_wydzialu','ilosc_miejsc','czy_rzutnik','jaka_tablica']
 
 
 class LaboratoriumAdmin(admin.ModelAdmin):
-    list_display = ['nr_laboratorium','ilosc_miejsc','czy_rzutnik','osprzet']
+    list_display = ['nr_laboratorium','id_wydzialu','ilosc_miejsc','czy_rzutnik','osprzet']
 
 
 class AkademikAdmin(admin.ModelAdmin):

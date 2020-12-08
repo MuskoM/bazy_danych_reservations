@@ -136,6 +136,8 @@ class Dormitory_Room_reservations(View):
     def get(self, request, id_akademika, id_pokoju):
         selected_room = Pokoj.objects.get(id_akademika=id_akademika, id_pokoju=id_pokoju)
         nr_pom = selected_room.id_pokoju
+        opis = selected_room.opis
+        ilosc_lozek = selected_room.ilosc_lozek
 
         room_reservations_list = RezerwacjaPokoju.objects.filter(id_pokoju=id_pokoju, status='Z')
         room_reservations_list = room_reservations_list.order_by("data_od")
@@ -144,7 +146,9 @@ class Dormitory_Room_reservations(View):
             "akademik_id": id_akademika,
             "selected_room": selected_room,
             "nr_pom": nr_pom,
-            "lista_rezerwacji": room_reservations_list
+            "lista_rezerwacji": room_reservations_list,
+            "opis": opis,
+            "ilosc_lozek": ilosc_lozek
         }
 
         return render(request, 'reservations/akademiki/pokoj.html', context)
@@ -160,8 +164,11 @@ class Dormitory_Room_reservations(View):
             new_reservation_form.data_do = new_reservation.cleaned_data['data_do']
 
             try:
-                new_reservation.save()
-                messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
+                if RezerwacjaPokoju.objects.filter(id_uzytkownika=request.user.uzytkownik).exists():
+                    messages.error(request, 'Juz dokonałałeś jednej rezerwacji!!')
+                else:
+                    new_reservation.save()
+                    messages.success(request, 'Pomyślnie dokonano rezerwacji!!')
             except ValidationError:
                 messages.error(request, 'Nie dokonano rezerwacji!! Wybrano datę z przeszłośći')
 
@@ -193,7 +200,7 @@ class Pending_room_reservations(View):
         pending = RezerwacjaPokoju.objects.filter(status="R")
         pending = pending.order_by("data_od")
         context = {
-            "reservations_list": pending
+            "room_reservations_list": pending
         }
 
         return render(request, 'reservations/admin_reservations/pending_room_reservations_list.html', context)
@@ -233,10 +240,10 @@ def accepted_reservations(request):
 def declined_room_reservations(request):
     declined = RezerwacjaPokoju.objects.filter(status="O")
     context = {
-        "reservations_list": declined,
+        "room_reservations_list": declined,
     }
 
-    return render(request, 'reservations/admin_reservations/declined_reservations_list.html', context)
+    return render(request, 'reservations/admin_reservations/declined_room_reservations_list.html', context)
 
 
 @login_required
@@ -244,10 +251,10 @@ def accepted_room_reservations(request):
     accepted = RezerwacjaPokoju.objects.filter(status="Z")
 
     context = {
-        "reservations_list": accepted,
+        "room_reservations_list": accepted,
     }
 
-    return render(request, 'reservations/admin_reservations/accepted_reservations_list.html', context)
+    return render(request, 'reservations/admin_reservations/accepted_room_reservations_list.html', context)
 
 
 @login_required
@@ -292,7 +299,7 @@ def user_pending_room_reservations(request):
     pending = RezerwacjaPokoju.objects.filter(id_uzytkownika=user_id, status="R")
 
     context = {
-        "reservations_list": pending,
+        "room_reservations_list": pending,
     }
 
     return render(request, 'reservations/user_reservations/user_pending_room_reservations_list.html', context)
@@ -304,7 +311,7 @@ def user_declined_room_reservations(request):
     declined = RezerwacjaPokoju.objects.filter(id_uzytkownika=user_id, status="O")
 
     context = {
-        "reservations_list": declined
+        "room_reservations_list": declined
     }
 
     return render(request, 'reservations/user_reservations/user_declined_room_reservations_list.html', context)
@@ -316,7 +323,7 @@ def user_accepted_room_reservations(request):
     accepted_reservations = RezerwacjaPokoju.objects.filter(id_uzytkownika=user_id, status="Z")
 
     context = {
-        "reservations_list": accepted_reservations
+        "room_reservations_list": accepted_reservations
     }
 
     return render(request, 'reservations/user_reservations/user_accepted_room_reservations_list.html', context)
@@ -373,7 +380,32 @@ def resign_from_reservation(request, reservation_id):
 
     selected_reservation.delete()
 
-    return redirect('profil')
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def detailed_room_reservation(request, room_reservation_id):
+    selected_room_reservation = RezerwacjaPokoju.objects.get(id_rezerwacji_pokoju=room_reservation_id)
+    akademik_id = selected_room_reservation.id_pokoju.id_akademika
+    ilosc_lozek = selected_room_reservation.id_pokoju.ilosc_lozek
+    opis = selected_room_reservation.id_pokoju.opis
+
+    context = {
+        "reservation": selected_room_reservation,
+        "akademik_id": akademik_id,
+        "beds_amount": ilosc_lozek,
+        "description": opis
+    }
+
+    return render(request, 'reservations/detailed_room_reservation.html', context)
+
+@login_required
+def resign_from_room_reservation(request, room_reservation_id):
+    user_reservations = RezerwacjaPokoju.objects.filter(id_uzytkownika=request.user.uzytkownik)
+    selected_reservation = user_reservations.get(id_rezerwacji_pokoju=room_reservation_id)
+
+    selected_reservation.delete()
+
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required

@@ -6,16 +6,17 @@
 {% endblock title %}
 
     <table>
-        {% for reservation in lista_rezerwacji %}
+        {% for reservation in room_reservations_list %}
             <form action="{% url 'temp_reservation_room' reservation %}" method="POST" role="form">
                         {% csrf_token %}
             <tr>
                 <td>
                     <hr style="height: 2px; background: black">
                     <ul style="list-style-type:none">
+                        <li><strong>{{ reservation.id_pokoju }}</strong></li>
                         <li name="data_do"><strong>Poczatek rezerwacji:</strong> {{ reservation.data_od }}</li>
                         <li name="data_do"><strong>Koniec rezerwacji:</strong> {{ reservation.data_do }}</li>
-                        <li><strong>Pokój:</strong> {{ reservation.opis }}</li>
+                        <li><strong>Ilość łóżek:</strong> {{ reservation.id_pokoju.ilosc_lozek }}</li>
                         <li name="id_uzytkownika"><strong>Rezerwacji dodkonal:</strong> {{ reservation.id_uzytkownika }}</li>
                         <li name="data_wykonania_rezerwacji"><strong>Dnia:</strong> {{ reservation.data_wykonania_rezerwacji }}</li>
                     </ul>
@@ -23,12 +24,15 @@
 
                 <td>
                     {% block buttons %}
-                        <div style="float: left;">
-                            <button name="status" value="Z" type="submit" class="btn btn-success">Zezwol</button>
-                            <button name="status" value="O" type="submit" class="btn btn-danger">Zabroń</button>
-                        </div>
-
-                    {% endblock %}
+                            <div style="float: left;margin-right: 1em">
+                                <a href="{% url "room_reservation_details" reservation.id_rezerwacji_pokoju %}"
+                                   class="btn btn-info">Szczegóły</a>
+                            </div>
+                            {% block resing_button %}
+                                <a href="{% url "resign_from_room_reservation" reservation.id_rezerwacji_pokoju %}"
+                                   class="btn btn-danger">Zrezygnuj</a>
+                            {% endblock resing_button %}
+                        {% endblock %}
                 </td>
             </tr>
             </form>
